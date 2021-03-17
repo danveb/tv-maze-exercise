@@ -96,12 +96,12 @@ async function getEpisodes(id) {
   // TODO: return array-of-episode-info, as described in docstring above
 
   // map over an array of results
-  let episodes = response.data.map(episode => {
+  let episodes = response.data.map(result => {
     return {
-      id: episode.id, 
-      name: episode.name, 
-      season: episode.season, 
-      number: episode.number, 
+      id: result.id, 
+      name: result.name, 
+      season: result.season, 
+      number: result.number
     }
   })
   return episodes; 
@@ -119,10 +119,19 @@ function populateEpisodes(episodes) {
   for(let episode of episodes) {
     let item = $(
       // episode (season #, episode #) 
-      `<li>${episode.name}(season ${episode.season}, episode ${episode.number})</li>`
-    )
+      `<li>${episode.name}(season ${episode.season}, episode ${episode.number})</li>`)
     episodeList.append(item); 
   }
   $('#episodes-area').show(); 
 }
 
+/** Click event to show episodes
+ */
+$('#shows-list').on('click', '#btn-search', async function episodeClick(evt) {
+  evt.preventDefault(); 
+  let id = $(evt.target).closest('.Show').data('show-id'); 
+  // console.log(query); 
+  let episodes = await getEpisodes(id); 
+  // console.log(episodes); 
+  populateEpisodes(episodes); 
+})
